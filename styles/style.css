@@ -1,0 +1,34 @@
+* {
+  font-family: "Montserrat";
+  padding: 0;
+  margin: 0;
+
+  text-transform: uppercase;
+}
+
+body {
+  background-color: var(--white);
+}
+
+#heading {
+  position: relative;
+
+  width: 100vw;
+  height: 100vh;
+  top: 0px;
+  left: 0px;
+}
+
+#heading .contents {
+  position: relative;
+
+  margin: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  text-align: center;
+}
+
+#heading .contents .logo-container {
+  margin: 20px;
+}
