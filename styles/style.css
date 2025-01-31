@@ -26,6 +26,8 @@ body {
   height: 200px;
 
   cursor: pointer;
+  opacity: 0;
+  animation: fade-in 0.5s linear 2s forwards;
 }
 
 #heading .cursor img {
