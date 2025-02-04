@@ -1,0 +1,8 @@
+@keyframes fade-in {
+  0% {
+    opacity: var(--fade);
+  }
+  100% {
+    opacity: var(--visibility);
+  }
+}
