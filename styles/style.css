@@ -36,6 +36,9 @@ body {
   --fade: 0%;
   --visibility: 100%;
   animation: fade-in 0.5s ease-in 2s forwards;
+
+  z-index: 99;
+  transition: 0.3s;
 }
 
 #heading .cursor img {
@@ -58,6 +61,42 @@ body {
   opacity: 0;
   --visibility: 30%;
   --fade: 10%;
+}
+
+#drip-component {
+  position: absolute;
+
+  top: 36%;
+  right: 95%;
+  z-index: 99;
+  width: 0;
+  height: 0;
+
+  transition: 1s 0.2s;
+
+  /* background-color: green; */
+}
+
+.water-path {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  width: 200%;
+  height: 2px;
+  rotate: 135deg;
+
+  transform: translateY(-50%, -50%);
+}
+
+#drip-component #drip {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  height: 100%;
+  width: 50%;
+  background-image: linear-gradient(90deg, #74ccf4, #1ca3ec, #0f5e9c);
 }
 
 #heading .contents {

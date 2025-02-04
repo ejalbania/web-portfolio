@@ -6,14 +6,17 @@ function configureHeader() {
   let logo = document.querySelector("#heading .contents img");
   let header = document.querySelector("#heading");
   let cursor = header.querySelector(".cursor");
-  let kettleIcon = header.querySelector("img");
+  let kettleIcon = cursor.querySelector("img");
   let areaIndicator = document.querySelector("div.cursor-guide-bar");
+  let dripComponent = document.querySelector("#drip-component");
 
   let kettleIsTilted = false;
   let isTimeoutRunning = false;
   let guideBarShouldShow = false;
 
-  let headerWidth = header.getBoundingClientRect().width;
+  let headerRect = header.getBoundingClientRect();
+  let headerWidth = headerRect.width;
+  let headerHeight = headerRect.height;
   let kettleBounds = kettleIcon.getBoundingClientRect();
   let logoRect = logo.getBoundingClientRect();
   let logoXOrigin = logoRect.x;
@@ -27,10 +30,14 @@ function configureHeader() {
   let kettleYSpace = logoYOrigin - kettleHeight / 2.5;
 
   function configureKettle() {
+    kettleIcon.ondragstart = (e) => {
+      return false;
+    };
     header.onmousedown = undefined;
     header.onmouseup = undefined;
 
-    headerWidth = header.getBoundingClientRect().width;
+    headerWidth = headerRect.width;
+    headerHeight = headerRect.height;
     kettleBounds = kettleIcon.getBoundingClientRect();
     logoRect = logo.getBoundingClientRect();
     logoXOrigin = logoRect.x;
@@ -43,43 +50,60 @@ function configureHeader() {
     kettleWidth = kettleBounds.width;
     kettleYSpace = logoYOrigin - kettleHeight / 2.5;
 
-    areaIndicator.style.width = `${filterWidth - 8}px`;
-    areaIndicator.style.height = `${kettleYSpace}px`;
+    areaIndicator.style.width = `${filterOpening}px`;
+    areaIndicator.style.height = `${kettleYSpace - 20}px`;
 
-    cursor.style.transition = "0.3s";
+    let spoutTipY = 0;
 
     const moveKettle = (e) => {
-      cursor.style.transform = `${updateKettleLoc(e)} ${updateKettleFlip(e)}`;
+      if (!kettleIsTilted) {
+        let isSpoutOnRight = kettleShouldFlip(e);
+        let radius = isSpoutOnRight ? 9 - kettleWidth : kettleWidth - 9;
+        let tiltAngle = isSpoutOnRight ? -45 : 45;
+        spoutTipY =
+          e.clientY - kettleHeight / 3.2 + radius * Math.sin(tiltAngle);
 
-      let cursorXMarker =
-        filterXLoc +
-        (kettleShouldFlip(e) ? 16 - kettleWidth : kettleWidth - 16);
-      let kettleIsAboveFilter = e.clientY < kettleYSpace;
-      let kettleAlignsWithFilter =
-        e.clientX > cursorXMarker && e.clientX < cursorXMarker + filterOpening;
+        cursor.style.transform = `${updateKettleLoc(e)} ${updateKettleFlip(e)}`;
 
-      let kettleShouldTilt = kettleIsAboveFilter && kettleAlignsWithFilter;
+        let cursorXMarker = filterXLoc + radius;
+        let kettleIsAboveFilter = e.clientY < kettleYSpace - 20;
+        let kettleAlignsWithFilter =
+          e.clientX > cursorXMarker &&
+          e.clientX < cursorXMarker + filterOpening;
 
-      header.onmousedown = kettleShouldTilt ? tiltKettle : undefined;
-      header.onmouseup = kettleShouldTilt ? tiltKettle : undefined;
+        let kettleShouldTilt = kettleIsAboveFilter && kettleAlignsWithFilter;
 
-      if (!isTimeoutRunning && !guideBarShouldShow) {
-        isTimeoutRunning = true;
-        setTimeout(() => {
-          console.log("Timeout finished");
-          guideBarShouldShow = true;
-          areaIndicator.style.animation =
-            "fade-in 0.75s ease-in-out 1s infinite";
+        header.onmousedown = kettleShouldTilt ? tiltKettle : undefined;
+        header.onmouseup = kettleShouldTilt ? tiltKettle : undefined;
+
+        if (!isTimeoutRunning && !guideBarShouldShow) {
+          isTimeoutRunning = true;
+          setTimeout(() => {
+            console.log("Timeout finished");
+            guideBarShouldShow = true;
+            areaIndicator.style.animation =
+              "fade-in 0.75s ease-in-out 1s infinite";
+            areaIndicator.style.left = `${cursorXMarker}px`;
+          }, 5000);
+        } else if (guideBarShouldShow) {
           areaIndicator.style.left = `${cursorXMarker}px`;
-        }, 5000);
-      } else if (guideBarShouldShow) {
-        areaIndicator.style.left = `${cursorXMarker}px`;
+        }
       }
     };
 
     const tiltKettle = (e) => {
       let tiltDegree = e.type == "mouseup" ? 0 : -45;
       kettleIsTilted = e.type == "mousedown";
+
+      if (kettleIsTilted) {
+        dripComponent.style.transition = "1s 0.2s";
+        dripComponent.style.width = `${logoYOrigin - spoutTipY}px`;
+        dripComponent.style.height = `${logoYOrigin - spoutTipY}px`;
+      } else {
+        dripComponent.style.transition = "0.16s 0s";
+        dripComponent.style.width = `0px`;
+        dripComponent.style.height = `0px`;
+      }
 
       cursor.style.transform = `
           ${updateKettleLoc(e)}
