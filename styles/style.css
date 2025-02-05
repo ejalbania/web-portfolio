@@ -97,7 +97,14 @@ body {
 
   height: 100%;
   width: 50%;
-  background-image: linear-gradient(90deg, #74ccf4, #1ca3ec, #0f5e9c);
+  border-radius: 1px;
+  background-image: linear-gradient(
+    270deg,
+    transparent,
+    #74ccf4,
+    #1ca3ec,
+    #0f5e9c
+  );
 }
 
 #heading .contents {
