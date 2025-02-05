@@ -96,7 +96,7 @@ function configureHeader() {
       kettleIsTilted = e.type == "mousedown";
 
       if (kettleIsTilted) {
-        dripComponent.style.transition = "1s 0.2s";
+        dripComponent.style.transition = "1s 0.2s ease-in";
         dripComponent.style.width = `${logoYOrigin - spoutTipY}px`;
         dripComponent.style.height = `${logoYOrigin - spoutTipY}px`;
       } else {
